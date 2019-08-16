@@ -5,8 +5,9 @@ var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
 var Game = require('./game')
-var CardData = require('./gamedata')
+var GameData = require('./gamedata')
 var Player = require('./player')
+
 
 app.use('/css',express.static(__dirname + '/css'));
 app.use('/js',express.static(__dirname + '/js'));
@@ -25,25 +26,90 @@ var Game = function(name) {
   this.startedAt = ""
   this.currentPlayerId = 0
   this.active = true
+  this.state = "pregame"
+  this.market = []
+}
+
+server.anonymizedGameDataFor = function(gameId, socketPlayer) {
+  var data = JSON.parse(JSON.stringify( server.games.find(function(e){return e.id == gameId}) ))
+  data.players.forEach(function(player) {
+    if(player.playerUid != socketPlayer.playerUid) {
+      player.hand = null;
+      player.me = false;
+      player.playerUid = null;
+    }
+    else {
+      player.me = true;
+    }
+
+    // player.drawDeck = [];
+    // player.discardDeck = [];
+  })
+  return data
 }
 
 server.addNewGame = function(name) {
   var g = new Game(name)
   g.id = Math.random().toString(36).substring(7)
+  g.market.push(GameData.Cards.find(c => c.id == "card_village"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_smithy"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_gardens"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_festival"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_laboratory"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_market"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_woodcutter"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_mine"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_council_room"))
+  g.market.push(GameData.Cards.find(c => c.id == "card_workshop"))
   server.games.push( g )
+  return g
+}
+
+server.joinGame = function(game, player) {
+  if(game.state == "pregame") {
+    var i = 0;
+    while(i++ < 7)
+      player.drawDeck.push(GameData.Cards.find(c => c.id == "card_copper"))
+    while(i++ < 11)
+      player.drawDeck.push(GameData.Cards.find(c => c.id == "card_estate"))
+  }
+  PlayerUtils.shuffle(player.drawDeck)
+  PlayerUtils.drawHand(player)
+  game.players.push(player)
 }
 
 var Player = function(name) {
-  this.playerUid;
-  this.opponentUid;
+  this.playerUid = Math.random().toString(36).substring(7);
+  this.opponentUid = Math.random().toString(36).substring(7);
   this.name = name;
-  this.hand; // Card Objects
-  this.drawDeck; // Card Objects
-  this.discardDeck; // Card Objects
+  this.hand = []; // Card Objects
+  this.drawDeck = []; // Card Objects
+  this.discardDeck = []; // Card Objects
 
-  this.actionsRemaining;
-  this.buysRemaining;
-  this.goldRemaining;
+  this.actionsRemaining = 0;
+  this.buysRemaining = 0;
+  this.goldRemaining = 0;
+  this.me = false;
+}
+
+var PlayerUtils = {}
+PlayerUtils.drawHand = function(player) {
+  while(player.hand.length < 5) {
+    player.hand.push(player.drawDeck.pop())
+    if(player.drawDeck.length == 0) {
+      while(player.discardDeck.length) {
+        player.drawDeck.push(player.discardDeck.pop())
+      }
+      PlayerUtils.shuffle(player.drawDeck)
+    }
+  }
+}
+PlayerUtils.shuffle = function(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 // server.addNewGame("default")
@@ -51,12 +117,11 @@ var Player = function(name) {
 // server.addNewGame("thing")
 
 io.on('connection',function(socket){
-  socket.on('createGame', function() {
-    console.log("CREATING GAME!")
-  })
+
   socket.on('playerConnected',function(name){
 
     socket.player = new Player(name)
+    // console.log(socket.player)
 
     // server.game.data.players[socket.id] = socket.player
 
@@ -65,9 +130,22 @@ io.on('connection',function(socket){
     // socket.broadcast.emit('playerConnected',socket.player);
 
     server.log("Player Joined: "+socket.id + " ("+name+")")
+
     socket.on('gameList', function() {
       var activeGames = server.games.filter(a => a.active)
       socket.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.length, startedAt: g.startedAt}}));
+    })
+
+    socket.on('createGame', function(name) {
+      var game = server.addNewGame(name);
+      server.joinGame(game, socket.player)
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
+    })
+
+    socket.on('joinGame', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      server.joinGame(game, socket.player)
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
     })
 
     // socket.on('fire', function(sequence) {
