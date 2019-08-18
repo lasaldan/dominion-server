@@ -8,7 +8,6 @@ var Game = require('./game')
 var GameData = require('./gamedata')
 var Player = require('./player')
 
-
 app.use('/css',express.static(__dirname + '/css'));
 app.use('/js',express.static(__dirname + '/js'));
 app.use('/assets',express.static(__dirname + '/assets'));
@@ -42,8 +41,9 @@ server.anonymizedGameDataFor = function(gameId, socketPlayer) {
       player.me = true;
     }
 
-    // player.drawDeck = [];
-    // player.discardDeck = [];
+    player.discardDeckCount = player.discardDeck.length;
+    player.drawDeck = player.drawDeck.length;
+    player.discardDeck = player.discardDeck.pop();
   })
   return data
 }
@@ -76,6 +76,10 @@ server.joinGame = function(game, player) {
   PlayerUtils.shuffle(player.drawDeck)
   PlayerUtils.drawHand(player)
   game.players.push(player)
+}
+
+server.rejoinGame = function(game, player) {
+
 }
 
 var Player = function(name) {
@@ -112,28 +116,30 @@ PlayerUtils.shuffle = function(array) {
   return array;
 }
 
-// server.addNewGame("default")
-// server.addNewGame("test")
-// server.addNewGame("thing")
+server.addNewGame("Default Game")
 
 io.on('connection',function(socket){
 
   socket.on('playerConnected',function(name){
 
     socket.player = new Player(name)
-    // console.log(socket.player)
 
-    // server.game.data.players[socket.id] = socket.player
+    server.log("Player Connected: "+socket.id + " ("+name+")")
 
-    // socket.emit('welcomePlayer', socket.player)
-    // socket.emit('universe',getUniverse());
-    // socket.broadcast.emit('playerConnected',socket.player);
+    socket.on('playerJoined', function() {
+      socket.emit("welcome", '{"id": "'+socket.player.playerUid+'", "name": "'+socket.player.name+'"}')
+      server.log("Player Joined: "+socket.id + " ("+name+")")
+    })
 
-    server.log("Player Joined: "+socket.id + " ("+name+")")
+    socket.on('playerRejoined', function(id) {
+      socket.player.playerUid = id;
+      socket.emit("welcome", '{"id": "'+socket.player.playerUid+'", "name": "'+socket.player.name+'"}')
+      server.log("Player Re-joined: " +name)
+    })
 
     socket.on('gameList', function() {
       var activeGames = server.games.filter(a => a.active)
-      socket.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.length, startedAt: g.startedAt}}));
+      socket.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
     socket.on('createGame', function(name) {
@@ -146,33 +152,22 @@ io.on('connection',function(socket){
       var game = server.games.find(function(e) {return e.id == gameId})
       server.joinGame(game, socket.player)
       socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+      socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+      server.log("Player Joined Game: " + socket.player.name + " -> " + game.name)
     })
 
-    // socket.on('fire', function(sequence) {
-    //   server.inputBuffer.push( new Input(socket.id, "fire", [], sequence) )
-    // })
-    //
-    // socket.on('thrust', function(sequence) {
-    //   server.inputBuffer.push( new Input(socket.id, "thrust", [], sequence) )
-    // })
-    //
-    // socket.on('reverse', function(sequence) {
-    //   server.inputBuffer.push( new Input(socket.id, "reverse", [], sequence) )
-    // })
-    //
-    // socket.on('rotateRight', function(sequence) {
-    //   server.inputBuffer.push( new Input(socket.id, "rotateRight", [], sequence) )
-    // })
-    //
-    // socket.on('rotateLeft', function(sequence) {
-    //   server.inputBuffer.push( new Input(socket.id, "rotateLeft", [500], sequence) )
-    // })
-    //
-    // socket.on('disconnect',function(){
-    //   delete server.game.data.players[socket.id]
-    //   io.emit('playerDisconnected',socket.id);
-    //   server.log("Player Disconnected: "+socket.id)
-    // });
+    socket.on('rejoinGame', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      server.rejoinGame(game, socket.player)
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+      socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+      server.log("Player Re-joined Game: " + socket.player.name + " -> " + game.name)
+    })
+
+    socket.on('leaveGame', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      game.players = game.players.filter(function(p){ return p != socket.player.playerUid})
+    })
 
   });
 });
@@ -188,47 +183,47 @@ server.listen(8081,function(){ // Listens to port 8081
 
 
 
-
-function Server() {
-  var players; // Player Objects
-  var currentPlayerId;
-
-  var playCard = function(cardUid) {}
-  var endTurn = function(playerUid) {}
-}
-
-function Player() {
-  var playerUid;
-  var opponentUid;
-  var name;
-  var hand; // Card Objects
-  var drawDeck; // Card Objects
-  var discardDeck; // Card Objects
-
-  var actionsRemaining;
-  var buysRemaining;
-  var goldRemaining;
-}
-
-function Card() {
-  var cardUid;
-  var name;
-  var description;
-  var image;
-}
-
-function Market() {
-  var stacks; // Stack Objects
-}
-
-function Stack() {
-  var cardType; // Card Object
-  var qty;
-}
-
-function main() {
-
-}
+//
+// function Server() {
+//   var players; // Player Objects
+//   var currentPlayerId;
+//
+//   var playCard = function(cardUid) {}
+//   var endTurn = function(playerUid) {}
+// }
+//
+// function Player() {
+//   var playerUid;
+//   var opponentUid;
+//   var name;
+//   var hand; // Card Objects
+//   var drawDeck; // Card Objects
+//   var discardDeck; // Card Objects
+//
+//   var actionsRemaining;
+//   var buysRemaining;
+//   var goldRemaining;
+// }
+//
+// function Card() {
+//   var cardUid;
+//   var name;
+//   var description;
+//   var image;
+// }
+//
+// function Market() {
+//   var stacks; // Stack Objects
+// }
+//
+// function Stack() {
+//   var cardType; // Card Object
+//   var qty;
+// }
+//
+// function main() {
+//
+// }
 
 /*
 

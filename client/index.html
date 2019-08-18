@@ -6,113 +6,10 @@
     <script src="gamedom.js"></script>
     <script src="connection.js"></script>
     <script src="client.js"></script>
+    <link rel="stylesheet" href="style.css" />
 
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-      body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-image: url("images/bg.jpg");
-        background-size: cover;
-        background-position: center center;
-      }
-
-      p, span {
-        color: white;
-      }
-
-      .card {
-        box-shadow: 0 0 40px black;
-        border: 1px solid white;
-        border-radius: 5px;
-      }
-
-      .card header {
-        color: white;
-        font-size: 30px;
-        text-align: center;
-        margin: 0 -50px 50px;
-      }
-
-      .card with-header {
-        padding-top: 0;
-      }
-
-      input {
-        width: 100%;
-        max-width: calc(100% - 40px);
-        text-align: center;
-        font-size: 30px;
-        padding: 10px 20px;
-      }
-
-      #login {
-      }
-
-      #gameList {
-      }
-
-      body > div {
-        display: none
-      }
-
-      body > div.card {
-        background-color: rgba(0,0,0,.7);
-        width: 100%;
-        max-width: 500px;
-        padding: 50px;
-      }
-
-      .button {
-        background-color: white;
-        color: black;
-        margin: 20px auto 0;
-        width: 200px;
-        padding: 10px 20px;
-        text-align: center;
-        cursor: pointer;
-      }
-      .login #login, .gameList #gameList, .addNewGame #addNewGame, .game #game {
-        display: block;
-      }
-      #games > div, #gameHeaders > div {
-        display: flex;
-      }
-      #games > div > span, #gameHeaders > div > span {
-        flex: 1;
-      }
-      #games > div > span:first-child, #gameHeaders > div > span:first-child {
-        flex: 2;
-      }
-      #gameHeaders {
-        font-size: 24px;
-        border-bottom: 1px solid white;
-        margin-bottom: 10px;
-      }
-      #games {
-        margin-bottom: 50px
-      }
-      #games > div {
-        font-size: 20px;
-        cursor: pointer;
-        padding: 10px 10px;
-        margin: 0 -10px;
-      }
-      #games > div:hover {
-        background-color: rgba(255,255,255,.3)
-      }
-      .hidden {
-        display: none
-      }
-
-    </style>
   </head>
-  <body class="login">
+  <body>
 
     <div id="login" class="card with-header">
       <header>Dominion Login</header>
@@ -127,7 +24,6 @@
         <div>
           <span>Game Name</span>
           <span>Players</span>
-          <span>Started</span>
         </div>
       </div>
       <div id="games">
@@ -145,35 +41,37 @@
     </div>
 
     <div id="game">
-      <p>GAME!</p>
+      <div id="gameMenu">
+        <div id="gameName"></div>
+        <div id="gameOptions">Options</div>
+        <div id="userName"></div>
+        <div id="logout">Leave Game</div>
+      </div>
+
+      <div id="leftPlayer">
+        <p>Left</p>
+      </div>
+
+      <div id="rightPlayer">
+        <p>Right</p>
+      </div>
+
+      <div id="topPlayer">
+        <p>Top</p>
+      </div>
+
+      <div id="player">
+        <div id="myDrawDeck"></div>
+        <div id="myHand"></div>
+        <div id="myDiscardDeck"></div>
+      </div>
+
+      <div id="gameboard">
+        <p>Game</p>
+      </div>
+
     </div>
 
-    <script>
-      document.querySelector("#login .button").addEventListener("click", function() {
-        var username = document.querySelector("#login input").value
-        server.join(username)
-      })
-
-      document.querySelector("#gameList .button").addEventListener("click", function() {
-        gameUI.setState("addNewGame")
-      })
-
-      document.querySelector("#addNewGame .button.cancel").addEventListener("click", function() {
-        gameUI.setState("gameList")
-      })
-
-      document.querySelector("#addNewGame .button.create").addEventListener("click", function() {
-        var gamename = document.querySelector("#addNewGame input").value
-        server.createGame(gamename)
-        gameUI.setState("game")
-      })
-
-      document.querySelector("#games").addEventListener("click", function(e) {
-        var entry = e.target.closest("#games > div")
-        var gameId = entry.querySelector("span:nth-child(4)").textContent
-        server.joinGame(gameId)
-        gameUI.setState("game")
-      })
-    </script>
+    <script src="listeners.js"></script>
   </body>
 </html>
