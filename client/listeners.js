@@ -2,6 +2,10 @@ if(! localStorage.getItem("dominion_userid")) {
   gameUI.setState("login")
 } else {
   server.rejoin(localStorage.getItem("dominion_userid"), localStorage.getItem("dominion_username"))
+  if(localStorage.getItem("dominion_gameId")) {
+    server.rejoinGame(localStorage.getItem("dominion_gameId"))
+    gameUI.setState("game")
+  }
 }
 
 
@@ -40,6 +44,7 @@ document.querySelector("#logout").addEventListener("click", function(e) {
 })
 
 document.querySelector("#lobby").addEventListener("click", function(e) {
+  localStorage.removeItem("dominion_gameId")
   server.getGameList()
   gameUI.setState("gameList")
 })
