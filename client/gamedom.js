@@ -7,6 +7,7 @@ var GameDOM = function() {
   }
 
   this.updateGamesList = function(games) {
+    console.log(games)
     var gamesWrapper = document.getElementById("games")
     if(games.length)
       gamesWrapper.innerHTML = ""
@@ -38,6 +39,8 @@ var GameDOM = function() {
 
   this.updateBoard = function() {
     var me = game.gameState.players.find(a => a.me)
+    document.getElementById("myDrawDeck").innerHTML = ""
+    document.getElementById("myHand").innerHTML = ""
     for(var i = 0; i < me.drawDeck; i++) {
       var card = document.createElement("div")
       document.getElementById("myDrawDeck").appendChild(card)

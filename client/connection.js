@@ -16,6 +16,10 @@ var Server = function(options) {
     gameUI.setState("gameList")
   };
 
+  this.getGameList = function(name) {
+    this.socket.emit("gameList")
+  }
+
   this.createGame = function(name) {
     this.socket.emit('createGame', name);
   }

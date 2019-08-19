@@ -36,4 +36,10 @@ document.querySelector("#games").addEventListener("click", function(e) {
 
 document.querySelector("#logout").addEventListener("click", function(e) {
   server.leaveGame(localStorage.getItem("dominion_gameId"))
+  server.getGameList()
+})
+
+document.querySelector("#lobby").addEventListener("click", function(e) {
+  server.getGameList()
+  gameUI.setState("gameList")
 })

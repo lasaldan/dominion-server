@@ -166,7 +166,8 @@ io.on('connection',function(socket){
 
     socket.on('leaveGame', function(gameId) {
       var game = server.games.find(function(e) {return e.id == gameId})
-      game.players = game.players.filter(function(p){ return p != socket.player.playerUid})
+      game.players = game.players.filter(function(p){ return p.playerUid != socket.player.playerUid})
+      socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
   });
