@@ -29,8 +29,8 @@ var Server = function(options) {
     localStorage.setItem("dominion_gameId", gameId)
   }
 
-  this.rejoinGame = function(gameId) {
-    this.socket.emit('rejoinGame', gameId)
+  this.requestRejoinGame = function(gameId) {
+    this.socket.emit('requestRejoinGame', gameId)
     localStorage.setItem("dominion_gameId", gameId)
   }
 
@@ -51,7 +51,13 @@ var Server = function(options) {
     gameUI.updateGamesList(data)
   })
 
+  this.socket.on('gameEnded', function(data) {
+    localStorage.removeItem("dominion_gameId")
+  })
+
   this.socket.on('gameState', function(data) {
+    if(gameUI.state != "game")
+      gameUI.setState("game")
     game.gameState = JSON.parse(data)
     gameUI.updateBoard()
   })

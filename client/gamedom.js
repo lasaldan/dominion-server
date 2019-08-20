@@ -1,13 +1,14 @@
 var GameDOM = function() {
   this.defaultState = "login"
+  this.state = this.defaultState
 
   this.setState = function(state) {
+    this.state = state
     document.body.className = ""
     document.body.classList.add(state)
   }
 
   this.updateGamesList = function(games) {
-    console.log(games)
     var gamesWrapper = document.getElementById("games")
     if(games.length)
       gamesWrapper.innerHTML = ""
@@ -41,6 +42,12 @@ var GameDOM = function() {
     var me = game.gameState.players.find(a => a.me)
     document.getElementById("myDrawDeck").innerHTML = ""
     document.getElementById("myHand").innerHTML = ""
+    document.getElementById("topDrawDeck").innerHTML = ""
+    document.getElementById("topHand").innerHTML = ""
+    document.getElementById("leftDrawDeck").innerHTML = ""
+    document.getElementById("leftHand").innerHTML = ""
+    document.getElementById("rightDrawDeck").innerHTML = ""
+    document.getElementById("rightHand").innerHTML = ""
     for(var i = 0; i < me.drawDeck; i++) {
       var card = document.createElement("div")
       document.getElementById("myDrawDeck").appendChild(card)
@@ -51,7 +58,47 @@ var GameDOM = function() {
       card.tabIndex = -1;
       document.getElementById("myHand").appendChild(card)
     }
+    if(game.gameState.players.length >= 2) {
+      var left = game.gameState.players[(game.gameState.players.indexOf(me) + 1) % game.gameState.players.length]
+      for(var i = 0; i < left.drawDeck; i++) {
+        var card = document.createElement("div")
+        document.getElementById("leftDrawDeck").appendChild(card)
+      }
+      for(var i = 0; i < left.hand; i++) {
+        var card = document.createElement("div")
+        card.classList.add("card_blank")
+        document.getElementById("leftHand").appendChild(card)
+      }
+      document.getElementById("leftDrawDeck").dataset.playerName = left.name
+    }
+    if(game.gameState.players.length >= 3) {
+      var top = game.gameState.players[(game.gameState.players.indexOf(me) + 2) % game.gameState.players.length]
+      for(var i = 0; i < top.drawDeck; i++) {
+        var card = document.createElement("div")
+        document.getElementById("topDrawDeck").appendChild(card)
+      }
+      for(var i = 0; i < top.hand; i++) {
+        var card = document.createElement("div")
+        card.classList.add("card_blank")
+        document.getElementById("topHand").appendChild(card)
+      }
+      document.getElementById("topDrawDeck").dataset.playerName = top.name
+    }
+    if(game.gameState.players.length >= 4) {
+      var right = game.gameState.players[(game.gameState.players.indexOf(me) + 3) % game.gameState.players.length]
+      for(var i = 0; i < right.drawDeck; i++) {
+        var card = document.createElement("div")
+        document.getElementById("rightDrawDeck").appendChild(card)
+      }
+      for(var i = 0; i < right.hand; i++) {
+        var card = document.createElement("div")
+        card.classList.add("card_blank")
+        document.getElementById("rightHand").appendChild(card)
+      }
+      document.getElementById("rightDrawDeck").dataset.playerName = right.name
+    }
     document.getElementById("userName").innerHTML = localStorage.getItem("dominion_username")
+    document.getElementById("myDrawDeck").dataset.playerName = localStorage.getItem("dominion_username")
     document.getElementById("gameName").innerHTML = game.gameState.name
     console.log(game.gameState)
   }

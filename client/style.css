@@ -10,6 +10,7 @@ body {
   background-image: url("images/bg.jpg");
   background-size: cover;
   background-position: center center;
+  overflow: hidden;
 }
 
 p, span {
@@ -107,7 +108,7 @@ body.game #game {
   width: 100%;
   height: 100%;
   grid-template-columns: 100px 1fr 100px;
-  grid-template-rows: 50px 100px 1fr 300px;
+  grid-template-rows: 50px 100px 1fr 150px;
   grid-template-areas:
     "header header header"
     ". top ."
@@ -117,11 +118,12 @@ body.game #game {
 
 #game #gameMenu {
   grid-area: header;
-  background-color: rgba(0,0,0,.7);
+  background-color: black;
   border-bottom: 1px solid white;
   text-align: center;
   display: flex;
   color: white;
+  z-index: 2;
 }
 #game #gameMenu > div {
   flex: 1;
@@ -137,6 +139,8 @@ body.game #game {
 
 #game #topPlayer {
   grid-area: top;
+  transform: rotate(180deg);
+  display: flex;
 }
 
 #game #gameboard {
@@ -147,6 +151,23 @@ body.game #game {
   grid-area: me;
   display: flex;
 }
+#myDrawDeck:before, #leftDrawDeck:before, #rightDrawDeck:before, #topDrawDeck:before {
+  content: attr(data-player-name);
+  color: white;
+  z-index: 2;
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 50px;
+  font-size: 24px;
+  text-shadow: 0px 0px 2px rgba(0,0,0,1);
+  letter-spacing: 2px;
+}
+
+
+
 
 #myDrawDeck {
   position: relative;
@@ -169,36 +190,194 @@ body.game #game {
 #myDrawDeck > div:nth-child(2) {
   transform: rotate(-4deg);
 }
-
-#myHand {
-  flex: 1;
-}
-
 #myDiscardDeck {
   flex: none;
   width: 200px;
 }
-
 #myHand {
+  flex: 1;
   position: relative;
 }
 #myHand > div {
   position: absolute;
   box-shadow: 0 0 20px -5px black;
-  bottom: 0;
-  transition: transform .3s, bottom .3s, left .3s;
+  top: 0;
+  transition: transform .3s, top .3s, left .3s;
 }
 #myHand > div:focus {
   outline: none;
-  bottom: 340px !important;
+  top: -310px !important;
   transform: rotate(0deg) !important;
 }
+
+
+
+
+#topDrawDeck {
+  position: relative;
+  width: 200px;
+  flex: none;
+
+}
+#topDrawDeck > div {
+  width: 200px;
+  height: 307px;
+  background-image: url("images/Card_Back.jpg");
+  background-position: center center;
+  background-size: cover;
+  border-radius: 16px;
+  position: absolute;
+}
+#topDrawDeck > div:first-child {
+  transform: rotate(3deg);
+}
+#topDrawDeck > div:nth-child(2) {
+  transform: rotate(-4deg);
+}
+#topDiscardDeck {
+  flex: none;
+  width: 200px;
+}
+#topHand {
+  flex: 1;
+  position: relative;
+}
+#topHand > div {
+  position: absolute;
+  box-shadow: 0 0 20px -5px black;
+  top: 0;
+  transition: transform .3s, top .3s, left .3s;
+}
+#topHand > div:focus {
+  outline: none;
+  top: -310px !important;
+  transform: rotate(0deg) !important;
+}
+
+
+
+
+#leftPlayer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 50px 0;
+}
+#leftDrawDeck {
+  position: relative;
+  width: 200px;
+  flex: none;
+  transform: rotate(90deg);
+  height: 200px;
+  left: -100px;
+}
+#leftDrawDeck > div {
+  width: 200px;
+  height: 307px;
+  background-image: url("images/Card_Back.jpg");
+  background-position: center center;
+  background-size: cover;
+  border-radius: 16px;
+  position: absolute;
+}
+#leftDrawDeck > div:first-child {
+  transform: rotate(3deg);
+}
+#leftDrawDeck > div:nth-child(2) {
+  transform: rotate(-4deg);
+}
+#leftDiscardDeck {
+  flex: none;
+  width: 200px;
+  height: 200px;
+  left: -100px;
+  transform: rotate(90deg);
+  position: relative;
+}
+#leftHand {
+  flex: none;
+  height: 50px;
+  transform: rotate(90deg);
+}
+#leftHand > div {
+  position: absolute;
+  box-shadow: 0 0 20px -5px black;
+  top: 0;
+  transition: transform .3s, top .3s, left .3s;
+}
+#leftHand > div:focus {
+  outline: none;
+  top: -310px !important;
+  transform: rotate(0deg) !important;
+}
+
+
+
+
+
+#rightPlayer {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  margin: 50px 0;
+}
+#rightDrawDeck {
+  position: relative;
+  width: 200px;
+  flex: none;
+  transform: rotate(-90deg);
+  height: 200px;
+  left: 0px;
+}
+#rightDrawDeck > div {
+  width: 200px;
+  height: 307px;
+  background-image: url("images/Card_Back.jpg");
+  background-position: center center;
+  background-size: cover;
+  border-radius: 16px;
+  position: absolute;
+}
+#rightDrawDeck > div:first-child {
+  transform: rotate(3deg);
+}
+#rightDrawDeck > div:nth-child(2) {
+  transform: rotate(-4deg);
+}
+#rightDiscardDeck {
+  flex: none;
+  width: 200px;
+  height: 200px;
+  left: 0px;
+  transform: rotate(-90deg);
+  position: relative;
+}
+#rightHand {
+  flex: none;
+  height: 50px;
+  transform: rotate(-90deg);
+}
+#rightHand > div {
+  position: absolute;
+  box-shadow: 0 0 20px -5px black;
+  top: 0;
+  transition: transform .3s, top .3s, left .3s;
+}
+#rightHand > div:focus {
+  outline: none;
+  top: -310px !important;
+  transform: rotate(0deg) !important;
+}
+
+
+
 
 
 [class^=card_] {
   width: 170px;
   height: 277px;
   border-radius: 16px;
+  background-color: black;
   background-size: cover;
   border: 10px solid black;
   padding: 5px;
@@ -208,6 +387,9 @@ body.game #game {
 }
 .card_estate {
   background-image: url("images/Estate.jpg");
+}
+.card_blank {
+  background-image: url("images/Blank.jpg");
 }
 
 
@@ -232,722 +414,722 @@ $cardWidth: 200;
         }
     }
 } */
-#myHand div:nth-child(1):nth-last-child(1) {
+.hand div:nth-child(1):nth-last-child(1) {
   left: calc(50% - 5% + 5% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(2) {
+.hand div:nth-child(1):nth-last-child(2) {
   left: calc(50% - 10% + 5% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(3) {
+.hand div:nth-child(1):nth-last-child(3) {
   left: calc(50% - 15% + 5% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(4) {
+.hand div:nth-child(1):nth-last-child(4) {
   left: calc(50% - 20% + 5% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(5) {
+.hand div:nth-child(1):nth-last-child(5) {
   left: calc(50% - 25% + 5% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(6) {
+.hand div:nth-child(1):nth-last-child(6) {
   left: calc(50% - 30% + 5% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(7) {
+.hand div:nth-child(1):nth-last-child(7) {
   left: calc(50% - 35% + 5% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(8) {
+.hand div:nth-child(1):nth-last-child(8) {
   left: calc(50% - 40% + 5% - 100px);
   transform: rotate(-21deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(9) {
+.hand div:nth-child(1):nth-last-child(9) {
   left: calc(50% - 45% + 5% - 100px);
   transform: rotate(-24deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(10) {
+.hand div:nth-child(1):nth-last-child(10) {
   left: calc(50% - 50% + 5% - 100px);
   transform: rotate(-27deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(11) {
+.hand div:nth-child(1):nth-last-child(11) {
   left: calc(50% - 55% + 5% - 100px);
   transform: rotate(-30deg);
 }
 
-#myHand div:nth-child(1):nth-last-child(12) {
+.hand div:nth-child(1):nth-last-child(12) {
   left: calc(50% - 60% + 5% - 100px);
   transform: rotate(-33deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(1) {
+.hand div:nth-child(2):nth-last-child(1) {
   left: calc(50% - 5% + 10% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(2) {
+.hand div:nth-child(2):nth-last-child(2) {
   left: calc(50% - 10% + 10% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(3) {
+.hand div:nth-child(2):nth-last-child(3) {
   left: calc(50% - 15% + 10% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(4) {
+.hand div:nth-child(2):nth-last-child(4) {
   left: calc(50% - 20% + 10% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(5) {
+.hand div:nth-child(2):nth-last-child(5) {
   left: calc(50% - 25% + 10% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(6) {
+.hand div:nth-child(2):nth-last-child(6) {
   left: calc(50% - 30% + 10% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(7) {
+.hand div:nth-child(2):nth-last-child(7) {
   left: calc(50% - 35% + 10% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(8) {
+.hand div:nth-child(2):nth-last-child(8) {
   left: calc(50% - 40% + 10% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(9) {
+.hand div:nth-child(2):nth-last-child(9) {
   left: calc(50% - 45% + 10% - 100px);
   transform: rotate(-21deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(10) {
+.hand div:nth-child(2):nth-last-child(10) {
   left: calc(50% - 50% + 10% - 100px);
   transform: rotate(-24deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(11) {
+.hand div:nth-child(2):nth-last-child(11) {
   left: calc(50% - 55% + 10% - 100px);
   transform: rotate(-27deg);
 }
 
-#myHand div:nth-child(2):nth-last-child(12) {
+.hand div:nth-child(2):nth-last-child(12) {
   left: calc(50% - 60% + 10% - 100px);
   transform: rotate(-30deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(1) {
+.hand div:nth-child(3):nth-last-child(1) {
   left: calc(50% - 5% + 15% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(2) {
+.hand div:nth-child(3):nth-last-child(2) {
   left: calc(50% - 10% + 15% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(3) {
+.hand div:nth-child(3):nth-last-child(3) {
   left: calc(50% - 15% + 15% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(4) {
+.hand div:nth-child(3):nth-last-child(4) {
   left: calc(50% - 20% + 15% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(5) {
+.hand div:nth-child(3):nth-last-child(5) {
   left: calc(50% - 25% + 15% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(6) {
+.hand div:nth-child(3):nth-last-child(6) {
   left: calc(50% - 30% + 15% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(7) {
+.hand div:nth-child(3):nth-last-child(7) {
   left: calc(50% - 35% + 15% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(8) {
+.hand div:nth-child(3):nth-last-child(8) {
   left: calc(50% - 40% + 15% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(9) {
+.hand div:nth-child(3):nth-last-child(9) {
   left: calc(50% - 45% + 15% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(10) {
+.hand div:nth-child(3):nth-last-child(10) {
   left: calc(50% - 50% + 15% - 100px);
   transform: rotate(-21deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(11) {
+.hand div:nth-child(3):nth-last-child(11) {
   left: calc(50% - 55% + 15% - 100px);
   transform: rotate(-24deg);
 }
 
-#myHand div:nth-child(3):nth-last-child(12) {
+.hand div:nth-child(3):nth-last-child(12) {
   left: calc(50% - 60% + 15% - 100px);
   transform: rotate(-27deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(1) {
+.hand div:nth-child(4):nth-last-child(1) {
   left: calc(50% - 5% + 20% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(2) {
+.hand div:nth-child(4):nth-last-child(2) {
   left: calc(50% - 10% + 20% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(3) {
+.hand div:nth-child(4):nth-last-child(3) {
   left: calc(50% - 15% + 20% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(4) {
+.hand div:nth-child(4):nth-last-child(4) {
   left: calc(50% - 20% + 20% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(5) {
+.hand div:nth-child(4):nth-last-child(5) {
   left: calc(50% - 25% + 20% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(6) {
+.hand div:nth-child(4):nth-last-child(6) {
   left: calc(50% - 30% + 20% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(7) {
+.hand div:nth-child(4):nth-last-child(7) {
   left: calc(50% - 35% + 20% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(8) {
+.hand div:nth-child(4):nth-last-child(8) {
   left: calc(50% - 40% + 20% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(9) {
+.hand div:nth-child(4):nth-last-child(9) {
   left: calc(50% - 45% + 20% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(10) {
+.hand div:nth-child(4):nth-last-child(10) {
   left: calc(50% - 50% + 20% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(11) {
+.hand div:nth-child(4):nth-last-child(11) {
   left: calc(50% - 55% + 20% - 100px);
   transform: rotate(-21deg);
 }
 
-#myHand div:nth-child(4):nth-last-child(12) {
+.hand div:nth-child(4):nth-last-child(12) {
   left: calc(50% - 60% + 20% - 100px);
   transform: rotate(-24deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(1) {
+.hand div:nth-child(5):nth-last-child(1) {
   left: calc(50% - 5% + 25% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(2) {
+.hand div:nth-child(5):nth-last-child(2) {
   left: calc(50% - 10% + 25% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(3) {
+.hand div:nth-child(5):nth-last-child(3) {
   left: calc(50% - 15% + 25% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(4) {
+.hand div:nth-child(5):nth-last-child(4) {
   left: calc(50% - 20% + 25% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(5) {
+.hand div:nth-child(5):nth-last-child(5) {
   left: calc(50% - 25% + 25% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(6) {
+.hand div:nth-child(5):nth-last-child(6) {
   left: calc(50% - 30% + 25% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(7) {
+.hand div:nth-child(5):nth-last-child(7) {
   left: calc(50% - 35% + 25% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(8) {
+.hand div:nth-child(5):nth-last-child(8) {
   left: calc(50% - 40% + 25% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(9) {
+.hand div:nth-child(5):nth-last-child(9) {
   left: calc(50% - 45% + 25% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(10) {
+.hand div:nth-child(5):nth-last-child(10) {
   left: calc(50% - 50% + 25% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(11) {
+.hand div:nth-child(5):nth-last-child(11) {
   left: calc(50% - 55% + 25% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(5):nth-last-child(12) {
+.hand div:nth-child(5):nth-last-child(12) {
   left: calc(50% - 60% + 25% - 100px);
   transform: rotate(-21deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(1) {
+.hand div:nth-child(6):nth-last-child(1) {
   left: calc(50% - 5% + 30% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(2) {
+.hand div:nth-child(6):nth-last-child(2) {
   left: calc(50% - 10% + 30% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(3) {
+.hand div:nth-child(6):nth-last-child(3) {
   left: calc(50% - 15% + 30% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(4) {
+.hand div:nth-child(6):nth-last-child(4) {
   left: calc(50% - 20% + 30% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(5) {
+.hand div:nth-child(6):nth-last-child(5) {
   left: calc(50% - 25% + 30% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(6) {
+.hand div:nth-child(6):nth-last-child(6) {
   left: calc(50% - 30% + 30% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(7) {
+.hand div:nth-child(6):nth-last-child(7) {
   left: calc(50% - 35% + 30% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(8) {
+.hand div:nth-child(6):nth-last-child(8) {
   left: calc(50% - 40% + 30% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(9) {
+.hand div:nth-child(6):nth-last-child(9) {
   left: calc(50% - 45% + 30% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(10) {
+.hand div:nth-child(6):nth-last-child(10) {
   left: calc(50% - 50% + 30% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(11) {
+.hand div:nth-child(6):nth-last-child(11) {
   left: calc(50% - 55% + 30% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(6):nth-last-child(12) {
+.hand div:nth-child(6):nth-last-child(12) {
   left: calc(50% - 60% + 30% - 100px);
   transform: rotate(-18deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(1) {
+.hand div:nth-child(7):nth-last-child(1) {
   left: calc(50% - 5% + 35% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(2) {
+.hand div:nth-child(7):nth-last-child(2) {
   left: calc(50% - 10% + 35% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(3) {
+.hand div:nth-child(7):nth-last-child(3) {
   left: calc(50% - 15% + 35% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(4) {
+.hand div:nth-child(7):nth-last-child(4) {
   left: calc(50% - 20% + 35% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(5) {
+.hand div:nth-child(7):nth-last-child(5) {
   left: calc(50% - 25% + 35% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(6) {
+.hand div:nth-child(7):nth-last-child(6) {
   left: calc(50% - 30% + 35% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(7) {
+.hand div:nth-child(7):nth-last-child(7) {
   left: calc(50% - 35% + 35% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(8) {
+.hand div:nth-child(7):nth-last-child(8) {
   left: calc(50% - 40% + 35% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(9) {
+.hand div:nth-child(7):nth-last-child(9) {
   left: calc(50% - 45% + 35% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(10) {
+.hand div:nth-child(7):nth-last-child(10) {
   left: calc(50% - 50% + 35% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(11) {
+.hand div:nth-child(7):nth-last-child(11) {
   left: calc(50% - 55% + 35% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(7):nth-last-child(12) {
+.hand div:nth-child(7):nth-last-child(12) {
   left: calc(50% - 60% + 35% - 100px);
   transform: rotate(-15deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(1) {
+.hand div:nth-child(8):nth-last-child(1) {
   left: calc(50% - 5% + 40% - 100px);
   transform: rotate(21deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(2) {
+.hand div:nth-child(8):nth-last-child(2) {
   left: calc(50% - 10% + 40% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(3) {
+.hand div:nth-child(8):nth-last-child(3) {
   left: calc(50% - 15% + 40% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(4) {
+.hand div:nth-child(8):nth-last-child(4) {
   left: calc(50% - 20% + 40% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(5) {
+.hand div:nth-child(8):nth-last-child(5) {
   left: calc(50% - 25% + 40% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(6) {
+.hand div:nth-child(8):nth-last-child(6) {
   left: calc(50% - 30% + 40% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(7) {
+.hand div:nth-child(8):nth-last-child(7) {
   left: calc(50% - 35% + 40% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(8) {
+.hand div:nth-child(8):nth-last-child(8) {
   left: calc(50% - 40% + 40% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(9) {
+.hand div:nth-child(8):nth-last-child(9) {
   left: calc(50% - 45% + 40% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(10) {
+.hand div:nth-child(8):nth-last-child(10) {
   left: calc(50% - 50% + 40% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(11) {
+.hand div:nth-child(8):nth-last-child(11) {
   left: calc(50% - 55% + 40% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(8):nth-last-child(12) {
+.hand div:nth-child(8):nth-last-child(12) {
   left: calc(50% - 60% + 40% - 100px);
   transform: rotate(-12deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(1) {
+.hand div:nth-child(9):nth-last-child(1) {
   left: calc(50% - 5% + 45% - 100px);
   transform: rotate(24deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(2) {
+.hand div:nth-child(9):nth-last-child(2) {
   left: calc(50% - 10% + 45% - 100px);
   transform: rotate(21deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(3) {
+.hand div:nth-child(9):nth-last-child(3) {
   left: calc(50% - 15% + 45% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(4) {
+.hand div:nth-child(9):nth-last-child(4) {
   left: calc(50% - 20% + 45% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(5) {
+.hand div:nth-child(9):nth-last-child(5) {
   left: calc(50% - 25% + 45% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(6) {
+.hand div:nth-child(9):nth-last-child(6) {
   left: calc(50% - 30% + 45% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(7) {
+.hand div:nth-child(9):nth-last-child(7) {
   left: calc(50% - 35% + 45% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(8) {
+.hand div:nth-child(9):nth-last-child(8) {
   left: calc(50% - 40% + 45% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(9) {
+.hand div:nth-child(9):nth-last-child(9) {
   left: calc(50% - 45% + 45% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(10) {
+.hand div:nth-child(9):nth-last-child(10) {
   left: calc(50% - 50% + 45% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(11) {
+.hand div:nth-child(9):nth-last-child(11) {
   left: calc(50% - 55% + 45% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(9):nth-last-child(12) {
+.hand div:nth-child(9):nth-last-child(12) {
   left: calc(50% - 60% + 45% - 100px);
   transform: rotate(-9deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(1) {
+.hand div:nth-child(10):nth-last-child(1) {
   left: calc(50% - 5% + 50% - 100px);
   transform: rotate(27deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(2) {
+.hand div:nth-child(10):nth-last-child(2) {
   left: calc(50% - 10% + 50% - 100px);
   transform: rotate(24deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(3) {
+.hand div:nth-child(10):nth-last-child(3) {
   left: calc(50% - 15% + 50% - 100px);
   transform: rotate(21deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(4) {
+.hand div:nth-child(10):nth-last-child(4) {
   left: calc(50% - 20% + 50% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(5) {
+.hand div:nth-child(10):nth-last-child(5) {
   left: calc(50% - 25% + 50% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(6) {
+.hand div:nth-child(10):nth-last-child(6) {
   left: calc(50% - 30% + 50% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(7) {
+.hand div:nth-child(10):nth-last-child(7) {
   left: calc(50% - 35% + 50% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(8) {
+.hand div:nth-child(10):nth-last-child(8) {
   left: calc(50% - 40% + 50% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(9) {
+.hand div:nth-child(10):nth-last-child(9) {
   left: calc(50% - 45% + 50% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(10) {
+.hand div:nth-child(10):nth-last-child(10) {
   left: calc(50% - 50% + 50% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(11) {
+.hand div:nth-child(10):nth-last-child(11) {
   left: calc(50% - 55% + 50% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(10):nth-last-child(12) {
+.hand div:nth-child(10):nth-last-child(12) {
   left: calc(50% - 60% + 50% - 100px);
   transform: rotate(-6deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(1) {
+.hand div:nth-child(11):nth-last-child(1) {
   left: calc(50% - 5% + 55% - 100px);
   transform: rotate(30deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(2) {
+.hand div:nth-child(11):nth-last-child(2) {
   left: calc(50% - 10% + 55% - 100px);
   transform: rotate(27deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(3) {
+.hand div:nth-child(11):nth-last-child(3) {
   left: calc(50% - 15% + 55% - 100px);
   transform: rotate(24deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(4) {
+.hand div:nth-child(11):nth-last-child(4) {
   left: calc(50% - 20% + 55% - 100px);
   transform: rotate(21deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(5) {
+.hand div:nth-child(11):nth-last-child(5) {
   left: calc(50% - 25% + 55% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(6) {
+.hand div:nth-child(11):nth-last-child(6) {
   left: calc(50% - 30% + 55% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(7) {
+.hand div:nth-child(11):nth-last-child(7) {
   left: calc(50% - 35% + 55% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(8) {
+.hand div:nth-child(11):nth-last-child(8) {
   left: calc(50% - 40% + 55% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(9) {
+.hand div:nth-child(11):nth-last-child(9) {
   left: calc(50% - 45% + 55% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(10) {
+.hand div:nth-child(11):nth-last-child(10) {
   left: calc(50% - 50% + 55% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(11) {
+.hand div:nth-child(11):nth-last-child(11) {
   left: calc(50% - 55% + 55% - 100px);
   transform: rotate(0deg);
 }
 
-#myHand div:nth-child(11):nth-last-child(12) {
+.hand div:nth-child(11):nth-last-child(12) {
   left: calc(50% - 60% + 55% - 100px);
   transform: rotate(-3deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(1) {
+.hand div:nth-child(12):nth-last-child(1) {
   left: calc(50% - 5% + 60% - 100px);
   transform: rotate(33deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(2) {
+.hand div:nth-child(12):nth-last-child(2) {
   left: calc(50% - 10% + 60% - 100px);
   transform: rotate(30deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(3) {
+.hand div:nth-child(12):nth-last-child(3) {
   left: calc(50% - 15% + 60% - 100px);
   transform: rotate(27deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(4) {
+.hand div:nth-child(12):nth-last-child(4) {
   left: calc(50% - 20% + 60% - 100px);
   transform: rotate(24deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(5) {
+.hand div:nth-child(12):nth-last-child(5) {
   left: calc(50% - 25% + 60% - 100px);
   transform: rotate(21deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(6) {
+.hand div:nth-child(12):nth-last-child(6) {
   left: calc(50% - 30% + 60% - 100px);
   transform: rotate(18deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(7) {
+.hand div:nth-child(12):nth-last-child(7) {
   left: calc(50% - 35% + 60% - 100px);
   transform: rotate(15deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(8) {
+.hand div:nth-child(12):nth-last-child(8) {
   left: calc(50% - 40% + 60% - 100px);
   transform: rotate(12deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(9) {
+.hand div:nth-child(12):nth-last-child(9) {
   left: calc(50% - 45% + 60% - 100px);
   transform: rotate(9deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(10) {
+.hand div:nth-child(12):nth-last-child(10) {
   left: calc(50% - 50% + 60% - 100px);
   transform: rotate(6deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(11) {
+.hand div:nth-child(12):nth-last-child(11) {
   left: calc(50% - 55% + 60% - 100px);
   transform: rotate(3deg);
 }
 
-#myHand div:nth-child(12):nth-last-child(12) {
+.hand div:nth-child(12):nth-last-child(12) {
   left: calc(50% - 60% + 60% - 100px);
   transform: rotate(0deg);
 }

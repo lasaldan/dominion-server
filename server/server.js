@@ -33,9 +33,10 @@ server.anonymizedGameDataFor = function(gameId, socketPlayer) {
   var data = JSON.parse(JSON.stringify( server.games.find(function(e){return e.id == gameId}) ))
   data.players.forEach(function(player) {
     if(player.playerUid != socketPlayer.playerUid) {
-      player.hand = null;
+      player.hand = player.hand.length;
       player.me = false;
       player.playerUid = null;
+      player.socketId = null;
     }
     else {
       player.me = true;
@@ -83,6 +84,7 @@ server.rejoinGame = function(game, player) {
 }
 
 var Player = function(name) {
+  this.socketId;
   this.playerUid = Math.random().toString(36).substring(7);
   this.opponentUid = Math.random().toString(36).substring(7);
   this.name = name;
@@ -123,6 +125,7 @@ io.on('connection',function(socket){
   socket.on('playerConnected',function(name){
 
     socket.player = new Player(name)
+    socket.player.socketId = socket.id;
 
     server.log("Player Connected: "+socket.id + " ("+name+")")
 
@@ -152,16 +155,28 @@ io.on('connection',function(socket){
       var game = server.games.find(function(e) {return e.id == gameId})
       server.joinGame(game, socket.player)
       socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+      // socket.broadcast.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
       socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
       server.log("Player Joined Game: " + socket.player.name + " -> " + game.name)
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))
+      })
+
     })
 
-    socket.on('rejoinGame', function(gameId) {
+    socket.on('requestRejoinGame', function(gameId) {
       var game = server.games.find(function(e) {return e.id == gameId})
-      server.rejoinGame(game, socket.player)
-      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
-      socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
-      server.log("Player Re-joined Game: " + socket.player.name + " -> " + game.name)
+      if(game) {
+        server.rejoinGame(game, socket.player)
+        socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+        socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+        server.log("Player Re-joined Game: " + socket.player.name + " -> " + game.name)
+      }
+      else {
+        server.log("Couldn't find game to rejoin: " + socket.player.name + " -> " + gameId)
+        socket.emit('gameEnded')
+      }
     })
 
     socket.on('leaveGame', function(gameId) {

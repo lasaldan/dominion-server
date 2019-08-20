@@ -3,11 +3,9 @@ if(! localStorage.getItem("dominion_userid")) {
 } else {
   server.rejoin(localStorage.getItem("dominion_userid"), localStorage.getItem("dominion_username"))
   if(localStorage.getItem("dominion_gameId")) {
-    server.rejoinGame(localStorage.getItem("dominion_gameId"))
-    gameUI.setState("game")
+    server.requestRejoinGame(localStorage.getItem("dominion_gameId"))
   }
 }
-
 
 document.querySelector("#login .button").addEventListener("click", function() {
   var username = document.querySelector("#login input").value
@@ -32,7 +30,7 @@ document.querySelector("#games").addEventListener("click", function(e) {
   var entry = e.target.closest("#games > div")
   var gameId = entry.querySelector("span.hidden").textContent
   if(document.querySelector("#games > div span[data-player-ids]").dataset.playerIds.indexOf( localStorage.getItem("dominion_userid") ) > -1)
-    server.rejoinGame(gameId)
+    server.requestRejoinGame(gameId)
   else
     server.joinGame(gameId)
   gameUI.setState("game")
