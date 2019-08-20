@@ -39,6 +39,8 @@ var GameDOM = function() {
   }
 
   this.updateBoard = function() {
+    document.getElementById("game").className = game.gameState.state
+    
     var me = game.gameState.players.find(a => a.me)
     document.getElementById("myDrawDeck").innerHTML = ""
     document.getElementById("myHand").innerHTML = ""

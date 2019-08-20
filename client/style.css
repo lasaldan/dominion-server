@@ -370,6 +370,15 @@ body.game #game {
 }
 
 
+#game.pregame #gameboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pregame #waiting {
+  padding: 50px;
+  background-color: rgba(0,0,0,.7);
+}
 
 
 
