@@ -40,7 +40,7 @@ var GameDOM = function() {
 
   this.updateBoard = function() {
     document.getElementById("game").className = game.gameState.state
-    
+
     var me = game.gameState.players.find(a => a.me)
     document.getElementById("myDrawDeck").innerHTML = ""
     document.getElementById("myHand").innerHTML = ""
@@ -50,6 +50,11 @@ var GameDOM = function() {
     document.getElementById("leftHand").innerHTML = ""
     document.getElementById("rightDrawDeck").innerHTML = ""
     document.getElementById("rightHand").innerHTML = ""
+
+    document.getElementById("leftDrawDeck").dataset.playerName = ""
+    document.getElementById("rightDrawDeck").dataset.playerName = ""
+    document.getElementById("topDrawDeck").dataset.playerName = ""
+
     for(var i = 0; i < me.drawDeck; i++) {
       var card = document.createElement("div")
       document.getElementById("myDrawDeck").appendChild(card)

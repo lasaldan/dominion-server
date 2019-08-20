@@ -136,8 +136,15 @@ io.on('connection',function(socket){
 
     socket.on('playerRejoined', function(id) {
       socket.player.playerUid = id;
+
+      var playerGames = server.games.filter(function(g) { return g.players.map(p => p.playerUid).indexOf(id) >= 0 })
+      console.log("Games with new player: " + playerGames.length)
+      playerGames.forEach(function(game) {
+        game.players.find(p => p.playerUid == id).socketId = socket.id
+      })
+
       socket.emit("welcome", '{"id": "'+socket.player.playerUid+'", "name": "'+socket.player.name+'"}')
-      server.log("Player Re-joined: " +name)
+      server.log("Player Re-joined: " +name+ " !!Updated all existing games to new socketID")
     })
 
     socket.on('gameList', function() {
@@ -183,6 +190,11 @@ io.on('connection',function(socket){
       var game = server.games.find(function(e) {return e.id == gameId})
       game.players = game.players.filter(function(p){ return p.playerUid != socket.player.playerUid})
       socket.broadcast.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+      server.log("Player Left Game: " + socket.player.name + " -> " + game.name)
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))
+      })
     })
 
   });
