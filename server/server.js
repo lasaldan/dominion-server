@@ -138,7 +138,6 @@ io.on('connection',function(socket){
       socket.player.playerUid = id;
 
       var playerGames = server.games.filter(function(g) { return g.players.map(p => p.playerUid).indexOf(id) >= 0 })
-      console.log("Games with new player: " + playerGames.length)
       playerGames.forEach(function(game) {
         game.players.find(p => p.playerUid == id).socketId = socket.id
       })

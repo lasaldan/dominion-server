@@ -166,6 +166,10 @@ body.game #game {
   letter-spacing: 2px;
 }
 
+#myHand, #leftHand, #topHand, #rightHand {
+  z-index: 5;
+}
+
 
 
 
