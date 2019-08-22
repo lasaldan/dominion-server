@@ -7,7 +7,8 @@ module.exports = {
       playable: false,
       image: "",
       description: "",
-      quantity: 12
+      quantity: 12,
+      requiresAction: false,
     },
     {
       id: "card_duchy",
@@ -16,7 +17,8 @@ module.exports = {
       playable: false,
       image: "",
       description: "",
-      quantity: 12
+      quantity: 12,
+      requiresAction: false,
     },
     {
       id: "card_estate",
@@ -25,7 +27,8 @@ module.exports = {
       playable: false,
       image: "",
       description: "",
-      quantity: 24
+      quantity: 24,
+      requiresAction: false,
     },
     {
       id: "card_copper",
@@ -35,8 +38,13 @@ module.exports = {
       image: "",
       description: "",
       quantity: 60,
+      requiresAction: false,
       cost: 0,
-      value: 1
+      value: 1,
+      play: function(player) {
+        player.goldRemaining += 1
+        return player
+      }
     },
     {
       id: "card_silver",
@@ -46,6 +54,7 @@ module.exports = {
       image: "",
       description: "",
       quantity: 40,
+      requiresAction: false,
       cost: 3,
       value: 2
     },
@@ -57,6 +66,7 @@ module.exports = {
       image: "",
       description: "",
       quantity: 30,
+      requiresAction: false,
       cost: 6,
       value: 3
     },
@@ -67,7 +77,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_smithy",
@@ -76,7 +87,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_gardens",
@@ -85,7 +97,8 @@ module.exports = {
       playable: false,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_festival",
@@ -94,7 +107,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_laboratory",
@@ -103,7 +117,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_market",
@@ -112,7 +127,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_woodcutter",
@@ -121,7 +137,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_mine",
@@ -130,7 +147,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_council_room",
@@ -139,7 +157,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
     {
       id: "card_workshop",
@@ -148,7 +167,8 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 10
+      quantity: 10,
+      requiresAction: true,
     },
   ]
 }

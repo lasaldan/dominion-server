@@ -62,3 +62,11 @@ document.getElementById("send").addEventListener("click", function(e) {
   server.sendChat( document.querySelector("#compose input").value )
   document.querySelector("#compose input").value = ""
 })
+
+document.getElementById("myHand").addEventListener("click", function(e) {
+  var isPlayButton = e.target.closest("#myHand > div > div")
+  if(isPlayButton) {
+    var card = e.target.closest("#myHand > div")
+    server.playCard(card.className)
+  }
+})

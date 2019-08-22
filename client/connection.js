@@ -33,6 +33,10 @@ var Server = function(options) {
     this.socket.emit('startGame', gameId);
   }
 
+  this.playCard = function(cardName) {
+    this.socket.emit('playCard', JSON.stringify({cardName: cardName, gameId: localStorage.getItem("dominion_gameId")}));
+  }
+
   this.joinGame = function(gameId) {
     this.socket.emit('joinGame', gameId)
     localStorage.setItem("dominion_gameId", gameId)

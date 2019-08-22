@@ -67,6 +67,10 @@ var GameDOM = function() {
       var card = document.createElement("div")
       card.classList.add(me.hand[i].id)
       card.tabIndex = -1;
+      if(me.hand[i].playable) {
+        var button = document.createElement("div")
+        card.appendChild( button )
+      }
       document.getElementById("myHand").appendChild(card)
     }
     if(game.gameState.players.length >= 2) {
@@ -122,6 +126,7 @@ var GameDOM = function() {
     // Update Stats
     document.getElementById("buys").innerHTML = me.buysRemaining
     document.getElementById("actions").innerHTML = me.actionsRemaining
+    document.getElementById("gold").innerHTML = me.goldRemaining
     document.getElementById("goldInHand").innerHTML = me.hand.map(c => c.value).filter(c => c).reduce((a,b) => a + b, 0)
 
     document.getElementById("userName").innerHTML = localStorage.getItem("dominion_username")

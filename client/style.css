@@ -187,7 +187,7 @@ body.game #game {
   background-repeat: no-repeat;
 }
 #actions:after {
-  content: "Actions";
+  /* content: "Actions"; */
   color: white;
   position: absolute;
   bottom: 0;
@@ -359,6 +359,27 @@ body.game #game {
   outline: none;
   top: -310px !important;
   transform: rotate(0deg) !important;
+}
+#myHand > div > div {
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity .3s;
+  position: absolute;
+  top: -50px;
+  left: 20px;
+  right: 20px;
+  text-align: center;
+  background-color: #518547;
+  padding: 4px;
+  color: white;
+}
+#myHand > div > div:after {
+  content: "Play"
+}
+#myHand > div:focus > div {
+  opacity: 1;
+  pointer-events: all;
 }
 
 

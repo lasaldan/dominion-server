@@ -163,6 +163,26 @@ io.on('connection',function(socket){
       socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
+    socket.on('playCard', function(params) {
+      params = JSON.parse(params)
+      var card = GameData.Cards.find(c => c.id == params.cardName)
+      var cardInHand = socket.player.hand.filter(c => c.id == params.cardName).length > 0
+      if(cardInHand) {
+        var cardRequiresActions = card.requiresAction
+        var hasEnoughActions = cardRequiresActions ? socket.player.actionsRemaining > 0 : true
+
+        if(hasEnoughActions) {
+          if(cardRequiresActions)
+            socket.player.actionsRemaining --
+          socket.player = card.play(socket.player)
+          var cardIndex = socket.player.hand.findIndex(c => c.id == params.cardName);
+          socket.player.hand.splice(cardIndex, 1)
+          socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(params.gameId, socket.player)))
+
+        }
+      }
+    })
+
     socket.on('createChat', function(message) {
       var msg = JSON.parse(message)
       var game = server.games.find(function(e) {return e.id == msg.id})
