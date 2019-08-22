@@ -25,7 +25,7 @@ var Game = function(name) {
   this.name = name
   this.startedAt = ""
   this.currentPlayerId = 0
-  this.active = true
+  this.joinable = true
   this.state = "pregame"
   this.market = []
   this.chat = []
@@ -89,6 +89,7 @@ server.startGame = function(game) {
   game.state = "playing"
   game.currentPlayerId = game.players[ parseInt( Math.random() * game.players.length ) ].playerUid
   game.startedAt = new Date()
+  game.joinable = false
 }
 
 var Player = function(name) {
@@ -155,8 +156,8 @@ io.on('connection',function(socket){
     })
 
     socket.on('gameList', function() {
-      var activeGames = server.games.filter(a => a.active)
-      socket.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+      var joinableGames = server.games.filter(a => a.joinable)
+      socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
     socket.on('createChat', function(message) {
@@ -165,7 +166,10 @@ io.on('connection',function(socket){
       var gameId = msg.id
       var fullMessage = atob(msg.message)
 
-      game.chat.push(fullMessage);
+      game.chat.push({
+        message: fullMessage,
+        name: socket.player.name
+      });
       socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
       server.log("Player Chat: " + socket.player.name + " -> " + fullMessage)
 
@@ -184,9 +188,13 @@ io.on('connection',function(socket){
     socket.on('startGame', function(gameId) {
       var game = server.games.find(function(e) {return e.id == gameId})
       server.startGame(game)
+      var joinableGames = server.games.filter(a => a.joinable)
+
       server.log("Starting Game with " + game.players.length + " players: " + game.name)
       // socket.broadcast.emit("gameStart")
       socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
+      socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+      socket.broadcast.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
 
       game.players.forEach(function(p) {
         socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))

@@ -2,6 +2,10 @@ var GameDOM = function() {
   this.defaultState = "login"
   this.state = this.defaultState
 
+  this.scrollToBottom = function(el) {
+    el.scrollTop = el.scrollHeight;
+  }
+
   this.setState = function(state) {
     this.state = state
     document.body.className = ""
@@ -13,7 +17,7 @@ var GameDOM = function() {
     if(games.length)
       gamesWrapper.innerHTML = ""
     else
-      gamesWrapper.innerHTML = "<p>No Active Games</p>"
+      gamesWrapper.innerHTML = "<p>No Available Games</p>"
 
     games.forEach(function(game) {
       var gameEntry = document.createElement("div")
@@ -105,12 +109,14 @@ var GameDOM = function() {
       document.getElementById("rightDrawDeck").dataset.playerName = right.name
     }
     document.getElementById("messages").innerHTML = ""
-    
+
     game.gameState.chat.forEach(function(chat) {
       var el = document.createElement("div")
-      el.innerHTML = chat
+      el.innerHTML = chat.message
+      el.dataset.name = chat.name
       document.getElementById("messages").appendChild( el )
     })
+    this.scrollToBottom(document.getElementById("messages"))
     document.getElementById("userName").innerHTML = localStorage.getItem("dominion_username")
     document.getElementById("myDrawDeck").dataset.playerName = localStorage.getItem("dominion_username")
     document.getElementById("gameName").innerHTML = game.gameState.name

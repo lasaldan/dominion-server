@@ -151,6 +151,7 @@ body.game #game {
   border: 1px solid white;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 #messages {
   flex: 1;
@@ -181,10 +182,16 @@ body.game #game {
 #messages {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  overflow: auto;
 }
 #messages > div {
   text-align: left;
+  padding: 5px
+}
+#messages > div:before {
+  content: attr(data-name) ': ';
+  color: #917d4b;
 }
 
 #game #gameMenu > div {
