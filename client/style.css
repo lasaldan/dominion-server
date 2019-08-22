@@ -123,7 +123,70 @@ body.game #game {
   display: flex;
   color: white;
   z-index: 6;
+  flex-direction: column;
 }
+#gameDetails {
+  flex: none !important;
+  height: 150px;
+}
+#gameName {
+  font-size: 30px;
+}
+#gameActions {
+  display: flex;
+  margin: 10px;
+}
+#gameActions > div {
+  flex: 1;
+  border: 1px solid white;
+  padding: 5px 10px;
+  margin: 3px;
+  cursor: pointer;
+}
+#gameActions > div:hover {
+  background-color: #222222;
+}
+#chat {
+  margin: 10px;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+}
+#messages {
+  flex: 1;
+}
+#compose {
+  display: flex;
+  border-top: 1px solid white;
+  align-items: center;
+  background-color: #518547;
+}
+#send {
+  padding: 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+#compose input {
+  background-color: #222222;
+  border: none;
+  color: white;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 8px;
+  text-align: left;
+}
+#compose input:focus {
+  outline: none;
+}
+#messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+#messages > div {
+  text-align: left;
+}
+
 #game #gameMenu > div {
   flex: 1;
 }
@@ -373,14 +436,19 @@ body.game #game {
 }
 
 
+
 #game.pregame #gameboard {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.pregame #waiting {
+#waiting {
+  display: none;
   padding: 50px;
   background-color: rgba(0,0,0,.7);
+}
+.pregame #waiting {
+  display: block;
 }
 
 

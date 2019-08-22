@@ -20,8 +20,17 @@ var Server = function(options) {
     this.socket.emit("gameList")
   }
 
+  this.sendChat = function(message) {
+    this.socket.emit("createChat", '{"id": \"' + localStorage.getItem("dominion_gameId") + '", "message": "' + btoa(message) + '"}')
+    console.log('{"id": \"' + localStorage.getItem("dominion_gameId") + '", "message": "' + btoa(message) + '"}')
+  }
+
   this.createGame = function(name) {
     this.socket.emit('createGame', name);
+  }
+
+  this.startGame = function(gameId) {
+    this.socket.emit('startGame', gameId);
   }
 
   this.joinGame = function(gameId) {
@@ -51,7 +60,15 @@ var Server = function(options) {
     gameUI.updateGamesList(data)
   })
 
+  this.socket.on('gameJoin', function(gameId) {
+    localStorage.setItem("dominion_gameId", gameId)
+  })
+
   this.socket.on('gameEnded', function(data) {
+    localStorage.removeItem("dominion_gameId")
+  })
+
+  this.socket.on('gameStart', function() {
     localStorage.removeItem("dominion_gameId")
   })
 

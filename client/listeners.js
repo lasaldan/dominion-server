@@ -26,6 +26,10 @@ document.querySelector("#addNewGame .button.create").addEventListener("click", f
   gameUI.setState("game")
 })
 
+document.querySelector("#waiting .button").addEventListener("click", function() {
+  server.startGame(localStorage.getItem("dominion_gameId"))
+})
+
 document.querySelector("#games").addEventListener("click", function(e) {
   var entry = e.target.closest("#games > div")
   var gameId = entry.querySelector("span.hidden").textContent
@@ -45,4 +49,16 @@ document.querySelector("#lobby").addEventListener("click", function(e) {
   localStorage.removeItem("dominion_gameId")
   server.getGameList()
   gameUI.setState("gameList")
+})
+
+document.getElementById("compose").addEventListener("keydown", function(e) {
+  if(e.keyCode == 13) {
+    server.sendChat( document.querySelector("#compose input").value )
+    document.querySelector("#compose input").value = ""
+  }
+})
+
+document.getElementById("send").addEventListener("click", function(e) {
+  server.sendChat( document.querySelector("#compose input").value )
+  document.querySelector("#compose input").value = ""
 })

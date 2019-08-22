@@ -104,6 +104,13 @@ var GameDOM = function() {
       }
       document.getElementById("rightDrawDeck").dataset.playerName = right.name
     }
+    document.getElementById("messages").innerHTML = ""
+    
+    game.gameState.chat.forEach(function(chat) {
+      var el = document.createElement("div")
+      el.innerHTML = chat
+      document.getElementById("messages").appendChild( el )
+    })
     document.getElementById("userName").innerHTML = localStorage.getItem("dominion_username")
     document.getElementById("myDrawDeck").dataset.playerName = localStorage.getItem("dominion_username")
     document.getElementById("gameName").innerHTML = game.gameState.name

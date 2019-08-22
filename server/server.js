@@ -3,6 +3,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
+var atob = require('atob');
 
 var Game = require('./game')
 var GameData = require('./gamedata')
@@ -27,6 +28,7 @@ var Game = function(name) {
   this.active = true
   this.state = "pregame"
   this.market = []
+  this.chat = []
 }
 
 server.anonymizedGameDataFor = function(gameId, socketPlayer) {
@@ -81,6 +83,12 @@ server.joinGame = function(game, player) {
 
 server.rejoinGame = function(game, player) {
 
+}
+
+server.startGame = function(game) {
+  game.state = "playing"
+  game.currentPlayerId = game.players[ parseInt( Math.random() * game.players.length ) ].playerUid
+  game.startedAt = new Date()
 }
 
 var Player = function(name) {
@@ -151,10 +159,38 @@ io.on('connection',function(socket){
       socket.emit('gameList', server.games.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
+    socket.on('createChat', function(message) {
+      var msg = JSON.parse(message)
+      var game = server.games.find(function(e) {return e.id == msg.id})
+      var gameId = msg.id
+      var fullMessage = atob(msg.message)
+
+      game.chat.push(fullMessage);
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
+      server.log("Player Chat: " + socket.player.name + " -> " + fullMessage)
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))
+      })
+    })
+
     socket.on('createGame', function(name) {
       var game = server.addNewGame(name);
       server.joinGame(game, socket.player)
+      socket.emit('gameJoin', game.id)
       socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
+    })
+
+    socket.on('startGame', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      server.startGame(game)
+      server.log("Starting Game with " + game.players.length + " players: " + game.name)
+      // socket.broadcast.emit("gameStart")
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, socket.player)))
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))
+      })
     })
 
     socket.on('joinGame', function(gameId) {
