@@ -127,7 +127,7 @@ body.game #game {
 }
 #gameDetails {
   flex: none !important;
-  height: 150px;
+  height: 130px;
 }
 #gameName {
   font-size: 30px;
@@ -146,6 +146,84 @@ body.game #game {
 #gameActions > div:hover {
   background-color: #222222;
 }
+
+#turn {
+  flex-direction: column;
+  display: flex;
+}
+#stats {
+  display: flex;
+  padding: 0 5px;
+  flex: 1;
+  flex-direction: column;
+}
+#stats > div {
+  flex: 1;
+  height: 100px;
+  margin: 5px;
+  display: flex;
+}
+#gold, #actions, #buys {
+  color: white;
+  text-shadow: 0 0 3px black;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  max-height: 80px;
+}
+#gold {
+  background-image: url("images/coin.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+#actions {
+  position: relative;
+  background-image: url(images/action.jpg);
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+#actions:after {
+  content: "Actions";
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+}
+#buys {
+  position: relative;
+}
+#buys:after {
+  content: "Buys";
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+}
+#stats > div:last-child {
+  flex: none;
+  height: auto;
+}
+#stats > div:first-child {
+  justify-content: space-between;
+}
+#goldInHand:after {
+  content: " " attr(data-after);
+}
+#playAllTreasure {
+  width: auto;
+  margin-top: 10px;
+}
+
 #chat {
   margin: 10px;
   border: 1px solid white;

@@ -108,8 +108,9 @@ var GameDOM = function() {
       }
       document.getElementById("rightDrawDeck").dataset.playerName = right.name
     }
-    document.getElementById("messages").innerHTML = ""
 
+    // Rebuild Chat Window
+    document.getElementById("messages").innerHTML = ""
     game.gameState.chat.forEach(function(chat) {
       var el = document.createElement("div")
       el.innerHTML = chat.message
@@ -117,6 +118,12 @@ var GameDOM = function() {
       document.getElementById("messages").appendChild( el )
     })
     this.scrollToBottom(document.getElementById("messages"))
+
+    // Update Stats
+    document.getElementById("buys").innerHTML = me.buysRemaining
+    document.getElementById("actions").innerHTML = me.actionsRemaining
+    document.getElementById("goldInHand").innerHTML = me.hand.map(c => c.value).filter(c => c).reduce((a,b) => a + b, 0)
+
     document.getElementById("userName").innerHTML = localStorage.getItem("dominion_username")
     document.getElementById("myDrawDeck").dataset.playerName = localStorage.getItem("dominion_username")
     document.getElementById("gameName").innerHTML = game.gameState.name

@@ -87,9 +87,12 @@ server.rejoinGame = function(game, player) {
 
 server.startGame = function(game) {
   game.state = "playing"
-  game.currentPlayerId = game.players[ parseInt( Math.random() * game.players.length ) ].playerUid
+  var currentPlayer = game.players[ parseInt( Math.random() * game.players.length ) ]
+  game.currentPlayerId = currentPlayer.playerUid
   game.startedAt = new Date()
   game.joinable = false
+  currentPlayer.actionsRemaining = 1;
+  currentPlayer.buysRemaining = 1;
 }
 
 var Player = function(name) {

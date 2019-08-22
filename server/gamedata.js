@@ -34,7 +34,9 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 60
+      quantity: 60,
+      cost: 0,
+      value: 1
     },
     {
       id: "card_silver",
@@ -43,7 +45,9 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 40
+      quantity: 40,
+      cost: 3,
+      value: 2
     },
     {
       id: "card_gold",
@@ -52,7 +56,9 @@ module.exports = {
       playable: true,
       image: "",
       description: "",
-      quantity: 30
+      quantity: 30,
+      cost: 6,
+      value: 3
     },
     {
       id: "card_village",
