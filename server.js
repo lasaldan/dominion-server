@@ -315,7 +315,7 @@ server.log = function(msg) {
   console.log(timestamp.toDateString() + " " + timestamp.toTimeString() + "   " + msg)
 }
 
-server.listen(8081,function(){ // Listens to port 8081
+server.listen(process.env.PORT || 8081, function(){ // Listens to port 8081
   server.log('Listening on '+server.address().port);
 });
 
