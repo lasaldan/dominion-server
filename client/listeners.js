@@ -63,6 +63,10 @@ document.getElementById("send").addEventListener("click", function(e) {
   document.querySelector("#compose input").value = ""
 })
 
+document.getElementById("endTurn").addEventListener("click", function(e) {
+  server.endTurn( )
+})
+
 document.getElementById("myHand").addEventListener("click", function(e) {
   var isPlayButton = e.target.closest("#myHand > div > div")
   if(isPlayButton) {

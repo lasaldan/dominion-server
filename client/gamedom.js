@@ -45,6 +45,7 @@ var GameDOM = function() {
   this.updateBoard = function() {
     document.getElementById("game").className = game.gameState.state
 
+    var currentPlayer = game.gameState.players.find(a => a.playerUid == game.gameState.currentPlayerId)
     var me = game.gameState.players.find(a => a.me)
     document.getElementById("myDrawDeck").innerHTML = ""
     document.getElementById("myHand").innerHTML = ""
@@ -59,6 +60,9 @@ var GameDOM = function() {
     document.getElementById("rightDrawDeck").dataset.playerName = ""
     document.getElementById("topDrawDeck").dataset.playerName = ""
 
+    document.querySelectorAll("[data-player-id]").forEach(d => d.classList.remove("current"));
+    document.body.classList.remove("myTurn")
+
     for(var i = 0; i < me.drawDeck; i++) {
       var card = document.createElement("div")
       document.getElementById("myDrawDeck").appendChild(card)
@@ -72,6 +76,11 @@ var GameDOM = function() {
         card.appendChild( button )
       }
       document.getElementById("myHand").appendChild(card)
+      document.getElementById("player").dataset.playerId = me.playerUid
+      if(currentPlayer && currentPlayer.playerUid == me.playerUid) {
+        document.getElementById("player").classList.add("current")
+        document.body.classList.add("myTurn")
+      }
     }
     if(game.gameState.players.length >= 2) {
       var left = game.gameState.players[(game.gameState.players.indexOf(me) + 1) % game.gameState.players.length]
@@ -85,6 +94,9 @@ var GameDOM = function() {
         document.getElementById("leftHand").appendChild(card)
       }
       document.getElementById("leftDrawDeck").dataset.playerName = left.name
+      document.getElementById("leftPlayer").dataset.playerId = left.playerUid
+      if(currentPlayer && currentPlayer.playerUid == left.playerUid)
+        document.getElementById("leftPlayer").classList.add("current")
     }
     if(game.gameState.players.length >= 3) {
       var top = game.gameState.players[(game.gameState.players.indexOf(me) + 2) % game.gameState.players.length]
@@ -98,6 +110,9 @@ var GameDOM = function() {
         document.getElementById("topHand").appendChild(card)
       }
       document.getElementById("topDrawDeck").dataset.playerName = top.name
+      document.getElementById("topPlayer").dataset.playerId = top.playerUid
+      if(currentPlayer && currentPlayer.playerUid == top.playerUid)
+        document.getElementById("topPlayer").classList.add("current")
     }
     if(game.gameState.players.length >= 4) {
       var right = game.gameState.players[(game.gameState.players.indexOf(me) + 3) % game.gameState.players.length]
@@ -111,6 +126,9 @@ var GameDOM = function() {
         document.getElementById("rightHand").appendChild(card)
       }
       document.getElementById("rightDrawDeck").dataset.playerName = right.name
+      document.getElementById("rightPlayer").dataset.playerId = right.playerUid
+      if(currentPlayer && currentPlayer.playerUid == right.playerUid)
+        document.getElementById("rightPlayer").classList.add("current")
     }
 
     // Rebuild Chat Window

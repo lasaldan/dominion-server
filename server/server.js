@@ -37,7 +37,7 @@ server.anonymizedGameDataFor = function(gameId, socketPlayer) {
     if(player.playerUid != socketPlayer.playerUid) {
       player.hand = player.hand.length;
       player.me = false;
-      player.playerUid = null;
+      // player.playerUid = null;
       player.socketId = null;
     }
     else {
@@ -103,6 +103,7 @@ var Player = function(name) {
   this.hand = []; // Card Objects
   this.drawDeck = []; // Card Objects
   this.discardDeck = []; // Card Objects
+  this.playedCards = [];
 
   this.actionsRemaining = 0;
   this.buysRemaining = 0;
@@ -128,6 +129,19 @@ PlayerUtils.shuffle = function(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+PlayerUtils.endTurn = function(player) {
+  player.hand.forEach(function(card) {
+    player.discardDeck.push(card)
+  })
+  player.playedCards.forEach(function(card) {
+    player.discardDeck.push(card)
+  })
+  player.hand = [];
+  player.playedCards = [];
+  player.actionsRemaining = 0;
+  player.buysRemaining = 0;
+  player.goldRemaining = 0;
 }
 
 server.addNewGame("Default Game")
@@ -158,6 +172,22 @@ io.on('connection',function(socket){
       server.log("Player Re-joined: " +name+ " !!Updated all existing games to new socketID")
     })
 
+    socket.on('endTurn', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      PlayerUtils.endTurn(socket.player)
+      PlayerUtils.drawHand(socket.player)
+      var nextPlayer = game.players[((game.players.indexOf(socket.player) + 1) % game.players.length)]
+      game.currentPlayerId = nextPlayer.playerUid
+      nextPlayer.actionsRemaining = 1;
+      nextPlayer.buysRemaining = 1;
+      server.log("Player Ended Turn: " + socket.player.name)
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, p)))
+      })
+    })
+
     socket.on('gameList', function() {
       var joinableGames = server.games.filter(a => a.joinable)
       socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
@@ -165,9 +195,11 @@ io.on('connection',function(socket){
 
     socket.on('playCard', function(params) {
       params = JSON.parse(params)
+      var game = server.games.find(function(e) {return e.id == params.gameId})
       var card = GameData.Cards.find(c => c.id == params.cardName)
       var cardInHand = socket.player.hand.filter(c => c.id == params.cardName).length > 0
-      if(cardInHand) {
+      var isMyTurn = socket.playerUid == game.currentPlayerId
+      if(cardInHand && isMyTurn) {
         var cardRequiresActions = card.requiresAction
         var hasEnoughActions = cardRequiresActions ? socket.player.actionsRemaining > 0 : true
 
@@ -176,9 +208,9 @@ io.on('connection',function(socket){
             socket.player.actionsRemaining --
           socket.player = card.play(socket.player)
           var cardIndex = socket.player.hand.findIndex(c => c.id == params.cardName);
-          socket.player.hand.splice(cardIndex, 1)
+          var playedCard = socket.player.hand.splice(cardIndex, 1)
+          socket.player.playedCards.push(playedCard)
           socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(params.gameId, socket.player)))
-
         }
       }
     })

@@ -174,10 +174,28 @@ body.game #game {
   max-height: 80px;
 }
 #gold {
+  position: relative;
   background-image: url("images/coin.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+}
+#gold:after {
+  content: "Treasure";
+  color: white;
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+#gold + div, #buys + div {
+  display: none;
+}
+.myTurn #gold + div, .myTurn #buys + div {
+  display: block;
 }
 #actions {
   position: relative;
@@ -187,10 +205,10 @@ body.game #game {
   background-repeat: no-repeat;
 }
 #actions:after {
-  /* content: "Actions"; */
+  content: "Actions";
   color: white;
   position: absolute;
-  bottom: 0;
+  bottom: -15px;
   left: 0;
   right: 0;
   text-align: center;
@@ -198,28 +216,46 @@ body.game #game {
 }
 #buys {
   position: relative;
+  background-image: url("images/buys.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 #buys:after {
   content: "Buys";
   color: white;
   position: absolute;
-  bottom: 0;
+  bottom: -15px;
   left: 0;
   right: 0;
   text-align: center;
   font-size: 14px;
 }
+.myTurn #stats > div:last-child {
+  opacity: 1;
+  pointer-events: all;
+}
 #stats > div:last-child {
+  opacity: 0;
+  pointer-events: none;
   flex: none;
   height: auto;
+}
+#stats > div:nth-child(3) {
+  justify-content: space-between;
 }
 #stats > div:first-child {
   justify-content: space-between;
 }
-#goldInHand:after {
+#goldInHand:after, #marketMessage:after {
   content: " " attr(data-after);
 }
 #playAllTreasure {
+  display: block;
+  width: auto;
+  margin-top: 10px;
+}
+#market {
   width: auto;
   margin-top: 10px;
 }
@@ -303,14 +339,21 @@ body.game #game {
   color: white;
   z-index: 2;
   position: absolute;
-  top: 8px;
+  top: -75px;
   left: 0;
   right: 0;
   text-align: center;
-  line-height: 50px;
+  line-height: 60px;
   font-size: 24px;
   text-shadow: 0px 0px 2px rgba(0,0,0,1);
   letter-spacing: 2px;
+  background-image: url("images/nameplate.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center 5px;
+}
+.current #myDrawDeck:before, .current #leftDrawDeck:before, .current #rightDrawDeck:before, .current #topDrawDeck:before {
+  background-image: url("images/nameplateCurrent.png");
 }
 
 #myHand, #leftHand, #topHand, #rightHand {
@@ -377,7 +420,7 @@ body.game #game {
 #myHand > div > div:after {
   content: "Play"
 }
-#myHand > div:focus > div {
+.current #myHand > div:focus > div {
   opacity: 1;
   pointer-events: all;
 }

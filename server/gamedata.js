@@ -42,7 +42,7 @@ module.exports = {
       cost: 0,
       value: 1,
       play: function(player) {
-        player.goldRemaining += 1
+        player.goldRemaining += this.value
         return player
       }
     },
@@ -56,7 +56,11 @@ module.exports = {
       quantity: 40,
       requiresAction: false,
       cost: 3,
-      value: 2
+      value: 2,
+      play: function(player) {
+        player.goldRemaining += this.value
+        return player
+      }
     },
     {
       id: "card_gold",
@@ -68,7 +72,11 @@ module.exports = {
       quantity: 30,
       requiresAction: false,
       cost: 6,
-      value: 3
+      value: 3,
+      play: function(player) {
+        player.goldRemaining += this.value
+        return player
+      }
     },
     {
       id: "card_village",
