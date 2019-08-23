@@ -126,13 +126,13 @@ var Player = function(name) {
 var PlayerUtils = {}
 PlayerUtils.drawHand = function(player) {
   while(player.hand.length < 5) {
-    player.hand.push(player.drawDeck.pop())
     if(player.drawDeck.length == 0) {
       while(player.discardDeck.length) {
         player.drawDeck.push(player.discardDeck.pop())
       }
       PlayerUtils.shuffle(player.drawDeck)
     }
+    player.hand.push(player.drawDeck.pop())
   }
 }
 PlayerUtils.shuffle = function(array) {
