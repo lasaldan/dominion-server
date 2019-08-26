@@ -9,6 +9,7 @@ module.exports = {
       description: "",
       quantity: 12,
       requiresAction: false,
+      cost: 8
     },
     {
       id: "card_duchy",
@@ -19,6 +20,7 @@ module.exports = {
       description: "",
       quantity: 12,
       requiresAction: false,
+      cost: 5
     },
     {
       id: "card_estate",
@@ -29,6 +31,7 @@ module.exports = {
       description: "",
       quantity: 24,
       requiresAction: false,
+      cost: 2
     },
     {
       id: "card_copper",
@@ -87,6 +90,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 3
     },
     {
       id: "card_smithy",
@@ -97,6 +101,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 4
     },
     {
       id: "card_gardens",
@@ -107,6 +112,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 4
     },
     {
       id: "card_festival",
@@ -117,6 +123,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 5
     },
     {
       id: "card_laboratory",
@@ -127,6 +134,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 5
     },
     {
       id: "card_market",
@@ -137,6 +145,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 5
     },
     {
       id: "card_woodcutter",
@@ -147,6 +156,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 3
     },
     {
       id: "card_mine",
@@ -157,6 +167,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 5
     },
     {
       id: "card_council_room",
@@ -167,6 +178,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 5
     },
     {
       id: "card_workshop",
@@ -177,6 +189,7 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
+      cost: 3
     },
   ]
 }

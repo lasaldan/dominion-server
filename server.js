@@ -97,6 +97,13 @@ server.rejoinGame = function(game, player) {
 
 }
 
+server.playCard = function(card, player, game) {
+  player = card.play(player)
+  var cardIndex = player.hand.findIndex(c => c.id == card.id);
+  var playedCard = player.hand.splice(cardIndex, 1)
+  player.playedCards.push(playedCard[0])
+}
+
 server.startGame = function(game) {
   game.state = "playing"
   var currentPlayer = game.players[ parseInt( Math.random() * game.players.length ) ]
@@ -105,6 +112,12 @@ server.startGame = function(game) {
   game.joinable = false
   currentPlayer.actionsRemaining = 1;
   currentPlayer.buysRemaining = 1;
+}
+
+server.updateEveryoneInGame = function(game, socket) {
+  game.players.forEach(function(p) {
+    socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(game.id, p)))
+  })
 }
 
 var Player = function(name) {
@@ -133,6 +146,8 @@ PlayerUtils.drawHand = function(player) {
       PlayerUtils.shuffle(player.drawDeck)
     }
     player.hand.push(player.drawDeck.pop())
+    console.log("PLAYER HAND")
+    console.log(player.hand)
   }
 }
 PlayerUtils.shuffle = function(array) {
@@ -143,12 +158,14 @@ PlayerUtils.shuffle = function(array) {
   return array;
 }
 PlayerUtils.endTurn = function(player) {
+
   player.hand.forEach(function(card) {
     player.discardDeck.push(card)
   })
   player.playedCards.forEach(function(card) {
     player.discardDeck.push(card)
   })
+
   player.hand = [];
   player.playedCards = [];
   player.actionsRemaining = 0;
@@ -205,12 +222,25 @@ io.on('connection',function(socket){
       socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
     })
 
+    socket.on('playAllTreasure', function(gameId) {
+      var game = server.games.find(function(e) {return e.id == gameId})
+      var isMyTurn = socket.player.playerUid == game.currentPlayerId
+      if(isMyTurn) {
+        var treasures = socket.player.hand.filter(c => c.id == "card_copper" || c.id == "card_silver" || c.id == "card_gold")
+        treasures.forEach(function(card) {
+          server.playCard(card, socket.player, game)
+        })
+        socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(gameId, socket.player)))
+        server.updateEveryoneInGame(game, socket)
+      }
+    })
+
     socket.on('playCard', function(params) {
       params = JSON.parse(params)
       var game = server.games.find(function(e) {return e.id == params.gameId})
       var card = GameData.Cards.find(c => c.id == params.cardName)
       var cardInHand = socket.player.hand.filter(c => c.id == params.cardName).length > 0
-      var isMyTurn = socket.playerUid == game.currentPlayerId
+      var isMyTurn = socket.player.playerUid == game.currentPlayerId
       if(cardInHand && isMyTurn) {
         var cardRequiresActions = card.requiresAction
         var hasEnoughActions = cardRequiresActions ? socket.player.actionsRemaining > 0 : true
@@ -218,10 +248,12 @@ io.on('connection',function(socket){
         if(hasEnoughActions) {
           if(cardRequiresActions)
             socket.player.actionsRemaining --
-          socket.player = card.play(socket.player)
-          var cardIndex = socket.player.hand.findIndex(c => c.id == params.cardName);
-          var playedCard = socket.player.hand.splice(cardIndex, 1)
-          socket.player.playedCards.push(playedCard)
+
+          server.playCard(card, socket.player, game)
+          // socket.player = card.play(socket.player)
+          // var cardIndex = socket.player.hand.findIndex(c => c.id == params.cardName);
+          // var playedCard = socket.player.hand.splice(cardIndex, 1)
+          // socket.player.playedCards.push(playedCard)
           socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(params.gameId, socket.player)))
         }
       }
