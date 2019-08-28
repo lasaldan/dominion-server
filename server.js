@@ -97,6 +97,14 @@ server.rejoinGame = function(game, player) {
 
 }
 
+server.buyCard = function(card, player, game) {
+  console.log("buying card")
+  // player = card.play(player)
+  // var cardIndex = player.hand.findIndex(c => c.id == card.id);
+  // var playedCard = player.hand.splice(cardIndex, 1)
+  // player.playedCards.push(playedCard[0])
+}
+
 server.playCard = function(card, player, game) {
   player = card.play(player)
   var cardIndex = player.hand.findIndex(c => c.id == card.id);
@@ -129,6 +137,7 @@ var Player = function(name) {
   this.drawDeck = []; // Card Objects
   this.discardDeck = []; // Card Objects
   this.playedCards = [];
+  this.boughtCards = [];
 
   this.actionsRemaining = 0;
   this.buysRemaining = 0;
@@ -138,6 +147,8 @@ var Player = function(name) {
 
 var PlayerUtils = {}
 PlayerUtils.drawHand = function(player) {
+  console.log(player)
+  console.log("PLAYER HAND")
   while(player.hand.length < 5) {
     if(player.drawDeck.length == 0) {
       while(player.discardDeck.length) {
@@ -146,9 +157,8 @@ PlayerUtils.drawHand = function(player) {
       PlayerUtils.shuffle(player.drawDeck)
     }
     player.hand.push(player.drawDeck.pop())
-    console.log("PLAYER HAND")
-    console.log(player.hand)
   }
+  console.log(player.hand)
 }
 PlayerUtils.shuffle = function(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -165,9 +175,13 @@ PlayerUtils.endTurn = function(player) {
   player.playedCards.forEach(function(card) {
     player.discardDeck.push(card)
   })
+  player.boughtCards.forEach(function(card) {
+    player.discardDeck.push(card)
+  })
 
   player.hand = [];
   player.playedCards = [];
+  player.boughtCards = [];
   player.actionsRemaining = 0;
   player.buysRemaining = 0;
   player.goldRemaining = 0;
@@ -220,6 +234,25 @@ io.on('connection',function(socket){
     socket.on('gameList', function() {
       var joinableGames = server.games.filter(a => a.joinable)
       socket.emit('gameList', joinableGames.map(g => { return {name: g.name, id: g.id, players: g.players.map(p => ({id: p.playerUid, name: p.name})), startedAt: g.startedAt}}));
+    })
+
+    socket.on('buyCard', function(params) {
+      params = JSON.parse(params)
+      var cardId = params.cardName
+      var card = GameData.Cards.find(c => c.id == params.cardName)
+      var game = server.games.find(function(e) {return e.id == params.gameId})
+      if(socket.player.goldRemaining >= card.cost && socket.player.buysRemaining >= 1) {
+        socket.player.boughtCards.push(card)
+        socket.player.goldRemaining -= card.cost
+        socket.player.buysRemaining -= 1
+      }
+      socket.emit('gameState', JSON.stringify(server.anonymizedGameDataFor(params.gameId, socket.player)))
+
+      game.players.forEach(function(p) {
+        socket.to(p.socketId).emit('gameState', JSON.stringify(server.anonymizedGameDataFor(params.gameId, p)))
+      })
+      server.log("Player Bought Card: " + socket.player.name + " -> " + card.name)
+
     })
 
     socket.on('playAllTreasure', function(gameId) {
