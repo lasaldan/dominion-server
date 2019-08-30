@@ -42,16 +42,17 @@ var Game = function(name) {
   this.market = []
   this.chat = []
   this.standardCards = []
-  this.finished = false
   this.winner = null
   this.scores = []
   this.checkWin = function() {
     if(this.market.filter(a => a.quantity <= 0).length >= 3)
-      this.finished = true;
+      this.state = "finished";
     if(this.standardCards.find(a => a.id == "card_province").quantity == 0)
-      this.finished = true;
+      this.state = "finished";
 
-    if(this.finished) {
+    var results = []
+
+    if(this.state == "finished") {
       this.players.forEach(function(p) {
         var score = 0;
         PlayerUtils.endTurn(p)
@@ -61,9 +62,10 @@ var Game = function(name) {
             score += card.value(p.drawDeck)
           }
         })
-        this.scores.push({name: p.name, score: score})
+        results.push({name: p.name, score: score})
       })
     }
+    this.scores = results
   }
 }
 
