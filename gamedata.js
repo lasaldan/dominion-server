@@ -9,6 +9,7 @@ module.exports = {
       description: "",
       quantity: 12,
       requiresAction: false,
+      value: function(){ return 6 },
       cost: 8
     },
     {
@@ -20,6 +21,7 @@ module.exports = {
       description: "",
       quantity: 12,
       requiresAction: false,
+      value: function(){ return 3 },
       cost: 5
     },
     {
@@ -31,6 +33,7 @@ module.exports = {
       description: "",
       quantity: 24,
       requiresAction: false,
+      value: function(){ return 1 },
       cost: 2
     },
     {
@@ -90,7 +93,11 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 3
+      cost: 3,
+      play: function(player, game, PlayerUtils) {
+        PlayerUtils.drawCard(player)
+        player.actionsRemaining += 2
+      }
     },
     {
       id: "card_smithy",
@@ -101,7 +108,12 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 4
+      cost: 4,
+      play: function(player, game, PlayerUtils) {
+        PlayerUtils.drawCard(player)
+        PlayerUtils.drawCard(player)
+        PlayerUtils.drawCard(player)
+      }
     },
     {
       id: "card_gardens",
@@ -112,7 +124,9 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 4
+      value:  function(deck){ return parseInt(deck.length / 10) },
+      cost: 4,
+      play: function() {}
     },
     {
       id: "card_festival",
@@ -123,7 +137,12 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 5
+      cost: 5,
+      play: function(player, game, PlayerUtils) {
+        player.goldRemaining += 2
+        player.actionsRemaining += 2
+        player.buysRemaining += 1
+      }
     },
     {
       id: "card_laboratory",
@@ -134,7 +153,12 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 5
+      cost: 5,
+      play: function(player, game, PlayerUtils) {
+        player.actionsRemaining += 1
+        PlayerUtils.drawCard(player)
+        PlayerUtils.drawCard(player)
+      }
     },
     {
       id: "card_market",
@@ -145,7 +169,13 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 5
+      cost: 5,
+      play: function(player, game, PlayerUtils) {
+        player.actionsRemaining += 1
+        player.goldRemaining += 1
+        player.buysRemaining += 1
+        PlayerUtils.drawCard(player)
+      }
     },
     {
       id: "card_woodcutter",
@@ -156,7 +186,11 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 3
+      cost: 3,
+      play: function(player, game, PlayerUtils) {
+        player.buysRemaining += 1
+        player.goldRemaining += 2
+      }
     },
     {
       id: "card_mine",
@@ -178,7 +212,16 @@ module.exports = {
       description: "",
       quantity: 10,
       requiresAction: true,
-      cost: 5
+      cost: 5,
+      play: function(player, game, PlayerUtils) {
+        player.buysRemaining += 1
+        PlayerUtils.drawCard(player)
+        PlayerUtils.drawCard(player)
+        PlayerUtils.drawCard(player)
+        game.players.forEach(function(p) {
+          PlayerUtils.drawCard(p)
+        })
+      }
     },
     {
       id: "card_workshop",
