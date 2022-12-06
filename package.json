@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/lasaldan/dominion",
   "dependencies": {
-    "express": "^4.15.2",
+    "express": "^4.18.2",
     "p2": "^0.7.1",
     "socket.io": "^1.7.3",
     "atob": "^2.1.2"
